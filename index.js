@@ -14,10 +14,14 @@ var Class = function(argv, superFn) {
     ctor.prototype = superFn.prototype;
     constructor.prototype = new ctor;
 
+    var current_class = constructor;
+
     constructor.prototype.super = function (fn) {
+      current_class = current_class.__super__;
       //super 没有fn函数，所以要用一下别人的函数
       //arguments 不是Array，是object，需要用一下Array的函数slice还去掉第一个参数；
-      var result = constructor.__super__.prototype[fn].apply(this, Array.prototype.slice.call(arguments, 1));
+      var result = current_class.prototype[fn].apply(this, Array.prototype.slice.call(arguments, 1));
+      current_class = constructor;
       return result;
     };
 
